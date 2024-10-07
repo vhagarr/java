@@ -1,0 +1,56 @@
+import java.io.*;
+import java.util.Scanner;
+
+class Student implements Serializable {
+    private String name;
+    private int age;
+    private double weight, height;
+    private String city, phone;
+
+    // Constructor
+    public Student(String name, int age, double weight, double height, String city, String phone) {
+        this.name = name; this.age = age; this.weight = weight; this.height = height;
+        this.city = city; this.phone = phone;
+    }
+
+    // Method to display student details
+    public void displayStudentInfo() {
+        System.out.printf("Name: %s\nAge: %d\nWeight: %.2f kg\nHeight: %.2f m\nCity: %s\nPhone: %s\n", 
+                          name, age, weight, height, city, phone);
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        
+        // Taking student information
+        System.out.print("Enter Name: "); String name = scanner.nextLine();
+        System.out.print("Enter Age: "); int age = scanner.nextInt();
+        System.out.print("Enter Weight (in kg): "); double weight = scanner.nextDouble();
+        System.out.print("Enter Height (in meters): "); double height = scanner.nextDouble(); scanner.nextLine(); 
+        System.out.print("Enter City: "); String city = scanner.nextLine();
+        System.out.print("Enter Phone Number: "); String phone = scanner.nextLine();
+
+        Student student = new Student(name, age, weight, height, city, phone);
+
+        // Writing to file
+        try (DataOutputStream dataOut = new DataOutputStream(new FileOutputStream("studentData.txt"))) {
+            dataOut.writeUTF(name); dataOut.writeInt(age); dataOut.writeDouble(weight);
+            dataOut.writeDouble(height); dataOut.writeUTF(city); dataOut.writeUTF(phone);
+            System.out.println("Student data saved to file.");
+        } catch (IOException e) {
+            System.out.println("Error writing to file."); e.printStackTrace();
+        }
+
+        // Reading from file
+        try (DataInputStream dataIn = new DataInputStream(new FileInputStream("studentData.txt"))) {
+            System.out.println("\nRetrieved Student Data:");
+            System.out.printf("Name: %s\nAge: %d\nWeight: %.2f kg\nHeight: %.2f m\nCity: %s\nPhone: %s\n", 
+                              dataIn.readUTF(), dataIn.readInt(), dataIn.readDouble(), 
+                              dataIn.readDouble(), dataIn.readUTF(), dataIn.readUTF());
+        } catch (IOException e) {
+            System.out.println("Error reading from file."); e.printStackTrace();
+        }
+    }
+}
