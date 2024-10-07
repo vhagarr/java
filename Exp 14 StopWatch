@@ -1,0 +1,51 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.util.ArrayList;
+
+public class StopWatch extends JFrame {
+    private JLabel timeLabel = new JLabel("00:00:00");
+    private JButton startButton = new JButton("Start"), stopButton = new JButton("Stop"), resetButton = new JButton("Reset"), lapButton = new JButton("Lap");
+    private JTextArea lapArea = new JTextArea(10, 20);
+    private boolean running = false;
+    private long startTime;
+    private Timer timer;
+    private ArrayList<String> lapTimes = new ArrayList<>();
+
+    public StopWatch() {
+        setTitle("Stopwatch");
+        setSize(300, 400);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setLayout(new FlowLayout());
+        timeLabel.setFont(new Font("Arial", Font.BOLD, 40)); 
+        lapArea.setEditable(false); 
+        add(timeLabel); add(startButton); add(stopButton); add(resetButton); add(lapButton); add(new JScrollPane(lapArea));
+        
+        startButton.addActionListener(e -> { if (!running) { running = true; startTime = System.currentTimeMillis(); startTimer(); } });
+        stopButton.addActionListener(e -> { running = false; if (timer != null) timer.stop(); });
+        resetButton.addActionListener(e -> { running = false; timeLabel.setText("00:00:00"); lapArea.setText(""); lapTimes.clear(); if (timer != null) timer.stop(); });
+        lapButton.addActionListener(e -> lap());
+
+        setVisible(true);
+    }
+
+    private void startTimer() {
+        timer = new Timer(100, e -> {
+            long elapsed = System.currentTimeMillis() - startTime;
+            timeLabel.setText(String.format("%02d:%02d:%02d", (elapsed / 3600000) % 24, (elapsed / 60000) % 60, (elapsed / 1000) % 60));
+        });
+        timer.start();
+    }
+
+    private void lap() {
+        if (running) {
+            long elapsed = System.currentTimeMillis() - startTime;
+            lapTimes.add(String.format("Lap: %02d:%02d:%02d", (elapsed / 3600000) % 24, (elapsed / 60000) % 60, (elapsed / 1000) % 60));
+            lapArea.append(lapTimes.get(lapTimes.size() - 1) + "\n");
+        }
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(StopWatch::new);
+    }
+}
