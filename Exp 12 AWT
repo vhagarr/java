@@ -1,0 +1,62 @@
+import java.awt.*;
+import java.awt.event.*;
+
+public class AwtProgram extends Frame implements ActionListener {
+    // Declaring AWT components
+    TextField nameField, ageField;
+    Button submitButton;
+    Label nameLabel, ageLabel, resultLabel;
+
+    // Constructor to set up GUI components
+    public AwtProgram() {
+        // Frame title
+        setTitle("AWT Swing Demo");
+
+        // Creating components
+        nameLabel = new Label("Enter Name: ");
+        ageLabel = new Label("Enter Age: ");
+        resultLabel = new Label("");
+
+        nameField = new TextField(20); // 20 columns wide
+        ageField = new TextField(5);   // 5 columns wide
+
+        submitButton = new Button("Submit");
+        
+        // Setting up layout
+        setLayout(new FlowLayout());
+
+        // Adding components to the frame
+        add(nameLabel);
+        add(nameField);
+        add(ageLabel);
+        add(ageField);
+        add(submitButton);
+        add(resultLabel);
+
+        // Adding action listener to the button
+        submitButton.addActionListener(this);
+
+        // Setting frame properties
+        setSize(300, 200);   // Width, height
+        setVisible(true);
+
+        // Closing the window when the 'close' button is clicked
+        addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent we) {
+                dispose();  // Close the window
+            }
+        });
+    }
+
+    // Handling button click
+    public void actionPerformed(ActionEvent ae) {
+        String name = nameField.getText();
+        String age = ageField.getText();
+        
+        resultLabel.setText("Hello, " + name + "! You are " + age + " years old.");
+    }
+
+    public static void main(String[] args) {
+        new AwtProgram();  // Create the frame
+    }
+}
